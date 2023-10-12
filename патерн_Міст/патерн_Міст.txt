@@ -1,0 +1,119 @@
+/** набридло мені писати діючий код, тип паче коли виявляються 
+  * помилки у виведенні не того, що я хочу
+  * тепер переходжу на псевдокод */
+
+
+// створюємо інтерфейси для сторінок та  типів подання
+// сторінка наслідує усі методи типу поданя сторінки табто її заголовок та контент
+interface Page is
+    protected field render: Renderer
+    constructor render(renderer: Renderer) is
+	this.render = render
+
+
+// тип подання сторінки приймає в себе  заголовок сторінки та кортент
+interface Renderer is
+    method renderPageTitle(title: String)
+    method renderPageContent(content: String)
+
+
+
+// "проста сторінка" (SimplePage)
+class SimplePage implements Page is
+    protected title: String
+    protected content: String
+
+    constructor SimplePage(title: String, content: String) is
+        this.title = title
+        this.content = content
+
+    method render(renderer: Renderer) is
+        renderer.renderPageTitle(title)
+        renderer.renderPageContent(content)
+
+// "сторінка товару" (ProductPage)
+class ProductPage implements Page is
+    protected product: Product
+
+    constructor ProductPage(product: Product) is
+        this.product = product
+
+    method render(renderer: Renderer) is
+        renderer.renderPageTitle(product.getName())
+        renderer.renderPageContent("ID: " + product.getId())
+        renderer.renderPageContent("Назва: " + product.getName())
+        renderer.renderPageContent("Опис: " + product.getDescription())
+        renderer.renderPageContent("Зображення: " + product.getImageUrl())
+
+// описуємо особливе реалізацію типу подання сторінки для HTML
+class HTMLRenderer implements Renderer is
+    method renderPageTitle(title: String) is
+        // логіка для виведення заголовку сторінки в HTML
+
+    method renderPageContent(content: String) is
+        // логіка для виведення контенту сторінки в HTML
+
+
+// описуємо особливе реалізацію типу подання сторінки для JSON
+class JSONRenderer implements Renderer is
+    method renderPageTitle(title: String) is
+        // логіка для виведення заголовку сторінки в JSON
+
+    method renderPageContent(content: String) is
+        // логіка для виведення контенту сторінки в JSON
+
+// описуємо особливе реалізацію типу подання сторінки для XML
+class XMLRenderer implements Renderer is
+    method renderPageTitle(title: String) is
+        // логіка для виведення заголовку сторінки в XML
+
+    method renderPageContent(content: String) is
+        // логіка для виведення контенту сторінки в XML
+
+
+// клас Product реалізує надання повної інформації про конкретний продуккт
+class Product is
+    private id: String
+    private name: String
+    private description: String
+    private imageUrl: String
+
+    constructor Product(id: String, name: String, description: String, imageUrl: String) is
+        this.id = id
+        this.name = name
+        this.description = description
+        this.imageUrl = imageUrl
+
+    method getId() is
+        //..
+
+    method getName() is
+        //..
+
+    method getDescription() is
+        //..
+
+    method getImageUrl() is
+        //..
+
+
+// десь у клієнтському програмному коді...
+
+product = new Product("123", "Назва товару", "Опис товару", "http://example.com/image.jpg")
+
+simplePage = new SimplePage("Заголовок сторінки", "Це проста сторінка з контентом.")
+productPage = new ProductPage(product)
+
+htmlRenderer = new HTMLRenderer()
+jsonRenderer = new JSONRenderer()
+xmlRenderer = new XMLRenderer()
+
+// проста сторінку в різних поданнях
+simplePage.render(htmlRenderer)
+simplePage.render(jsonRenderer)
+simplePage.render(xmlRenderer)
+
+// сторінка товару в різних падннях
+productPage.render(htmlRenderer)
+productPage.render(jsonRenderer)
+productPage.render(xmlRenderer)
