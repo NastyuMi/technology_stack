@@ -1,0 +1,71 @@
+// Общий интерфейс стратегии для доставки
+interface DeliveryStrategy is
+    method cost(distance)
+
+// прописываем стратегию для самовывоза
+class SelfDeliveryStrategy implements DeliveryStrategy is
+    method cost(distance) is
+        // при самовывози доставка = 0
+        return 0
+
+// стратегия для доставки внешней службы 
+class ExternalDeliveryServiceStrategy implements DeliveryStrategy is
+    method cost(distance) is
+        // если возьмем доставку службой такси
+	// оплата такси состаит из стоимости подачи машины (car_delivery)
+	// мин бесплатное растояние, пока не начался считаться тариф (min_km)
+	// и тариф за каждый следующий км после бесплатного расстояния (tariff)
+	if(distance <= min_km)
+	    return car_delivery
+        else
+	    return (car_delivery + (distance - min_km) * tariff)
+
+// стратегия для доставки внутренней службы
+class OwnDeliveryServiceStrategy implements DeliveryStrategy is
+    method cost(distance) is
+        // пусть сбственная служба ориентируется на дистанцию
+	// если до 5км от заведения , то costODS = 50
+	// если 5-10 , то costODS = 110 и тд 
+        return costODS
+
+// контекст для вибора и использования стратегии
+class DeliveryContext is
+    private deliveryStrategy: DeliveryStrategy
+
+    method setDeliveryStrategy(DeliveryStrategy deliveryStrategy) is
+        this.deliveryStrategy = deliveryStrategy
+
+    method calcDeliveryCost(distance) is
+        return deliveryStrategy.cost(distance)
+
+function getDeliveryToCustomer (address) is
+    // определенный функционал в котором из адресса определяется 
+    // расстояние от заведения до покупателя
+    return distance
+
+
+// пример интерфейса пользователя
+class ExampleApplication is
+    method main() is
+
+  	context = new DeliveryContext()
+
+	// пользователь вводит свой адресс 
+
+	distance = getDeliveryToCustomer(address)
+
+	// пользователь должен ввести 
+	// тип доставки (самовивоз, внешняя, собственная доставка)
+	// по этим данным устанавливаем стратегию
+	if (userChoice == "self_delivery") then
+            context.setDeliveryStrategy(new SelfDeliveryStrategy())
+	elseif (userChoice == "external_delivery") then
+            context.setDeliveryStrategy(new ExternalDeliveryServiceStrategy())
+	elseif (userChoice == "own_delivery") then
+            context.setDeliveryStrategy(new OwnDeliveryServiceStrategy())
+
+	//расчет стоимостри доставки по определенной стратегии
+	delivery_cost = context.calcDeliveryCost(distance)
+
+	// вывод 
+	print("Вартість доставки: " + delivery_cost)
