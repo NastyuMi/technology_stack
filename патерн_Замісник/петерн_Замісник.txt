@@ -1,0 +1,50 @@
+// интерфейс для загрузки данных по ссылке
+interface Downloader is
+    method download(url)
+
+// конкретная реализация интерфейса SimpleDownloader 
+// который есть реализацией интерсейса Downloader 
+// который отвечает за загрузку файлов
+class SimpleDownloader implements Downloader is
+    method download(url) is
+        // ... ф-ция для загрузки файлов по ссылке
+        // и вернуть содержимое файла в определенном виде 
+
+// Класс-заместитель SimpleDownloader который реализирует 
+// интерфейс Downloader и отвеает за загрузку файлов
+class CachedDownloader implements Downloader is
+    private field downloader: Downloader
+    //(map) для сохранения данных в кэше,где ключ URL
+    private field cache: map of string to string
+
+    constructor CachedDownloader(downloader: Downloader) is
+        this.downloader = downloader
+        this.cache = empty map
+
+    method download(url) is
+        // метод для получения данных с кэша
+        if (cache.find(url) != cache.end())
+            return cache[url]
+        else
+            data = downloader.download(url)
+            cache[url] = data
+            return data
+
+// конфигурационная часть програмы
+// где мы 2 раза подряд используем вывод данных со страниц
+// а затем выводим данные с кэша
+class Application is
+    method init() is
+	downloader = SimpleDownloader()
+	cachedDownloader = CachedDownloader(downloader)
+
+	url1 = "https://url1"
+	data1 = cachedDownloader.download(url1)
+	renderPage(data1)
+
+	url2 = "https://url2"
+	data2 = cachedDownloader.download(url2)
+	renderPage(data2)
+
+	data1Cached = cachedDownloader.download(url1)
+	renderPage(data1Cached)
