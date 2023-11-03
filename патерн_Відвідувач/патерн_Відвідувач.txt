@@ -1,0 +1,90 @@
+// класс Сотрудник
+class Employee is
+    //вносим должность и зп
+    field position: String  
+    field salary: Float    
+    
+    constructor Employee(position, salary) is
+        //создаем соответственный конструктор
+    
+    // метод принятия посетителя
+    method accept(visitor) is
+        visitor.visitEmployee(this)
+
+// класс Департамент
+class Department is
+    //принимаем массив сотрудников
+    field employees: array of Employee  
+    
+    constructor Department(employees) is
+        //создаем соответственный конструктор
+    
+    // метод принятия посетителя
+    method accept(visitor) is
+        visitor.visitDepartment(this)
+
+// класс Компания
+class Company is
+    // принимаем массив департаментов
+    field departments: array of Department  
+    
+    constructor Company(departments) is
+        //создаем соответственный конструктор
+    
+    // метод принятия посетителя
+    method accept(visitor) is
+        visitor.visitCompany(this)
+
+// интерфейс посетителя
+interface Visitor is
+    // подтягиваем посещение сотрудника, посещение департамента, посещение компании
+    method visitEmployee(employee: Employee)      
+    method visitDepartment(department: Department)  
+    method visitCompany(company: Company)          
+
+// класс для отчета о зарплате
+class SalaryReportVisitor implements Visitor is
+    field totalSalary: Float  
+    
+    method visitEmployee(employee) is
+        // рассчет зарплаты сотрудника и добавление к общей сумме
+        this.totalSalary += employee.salary
+    
+    method visitDepartment(department) is
+        // обходим всех сотрудников в департаменте
+        foreach (employee in department.employees) do
+            employee.accept(this)  
+	    // вызываем visitEmployee
+        
+    method visitCompany(company) is
+        // обходим все департаменты в компании
+        foreach (department in company.departments) do
+            department.accept(this)  
+	    // вызываем visitDepartment
+
+/ пример интерфейса пользователя
+class ExampleApplication is
+    method main() is
+
+	// создаем сотрудников
+	employee1 = new Employee("менеджер", 3000)
+	employee2 = new Employee("программист", 5000)
+
+	// создаем департаменты и добавляем сотрудников
+	department1 = new Department([employee1])
+	department2 = new Department([employee2])
+
+	// создаем компанию и добавляем департаменты
+	company = new Company([department1, department2])
+
+	// создаем посетителя для отчета о зарплате
+	reportVisitor = new SalaryReportVisitor()
+
+	// используем посетителя для получения отчета о зарплате
+	company.accept(reportVisitor)
+
+	// получаем общую сумму зарплаты
+	totalSalary = reportVisitor.totalSalary
+
+	// выводим отчет о зарплате
+	print("общая сумма зарплаты в компании: " + totalSalary)
