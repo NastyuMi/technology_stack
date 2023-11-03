@@ -1,0 +1,145 @@
+// базовый класс для обновления сущностей через REST API
+class EntityUpdater is
+    // шаблонный метод для обновления сущности
+    method updateEntity(entity) is
+        // шаг 1: Получение объекта для обновления
+        entityToUpdate = fetchEntity(entity.id)
+        
+        // шаг 2: валидация выходных данных
+        if validateEntity(entity) then
+            // валидация пройдена, продолжаем
+            // шаг 3: Формирование запроса на обновление информации
+            updateRequest = createUpdateRequest(entityToUpdate, entity)
+            response = sendUpdateRequest(updateRequest)
+            
+            // шаг 4: Формирование ответа
+            responseStatus = response.status
+            responseContent = response.content
+            
+            responseEntity = createResponseEntity(responseStatus, responseContent)
+            return responseEntity
+        else
+            // валидация не пройдена, создаем ответ с ошибкой
+            errorResponse = createErrorResponse()
+            return errorResponse
+    
+    // абстрактный метод для получения объекта с сервера
+    abstract method fetchEntity(entityId)
+    
+    // абстрактный метод для валидации входных данных
+    abstract method validateEntity(entity)
+    
+    // абстрактный метод для создания запроса на обновление
+    abstract method createUpdateRequest(existingEntity, newEntity)
+    
+    // абстрактный метод для отправки запроса на обновление
+    abstract method sendUpdateRequest(updateRequest)
+    
+    // абстрактный метод для создания объекта ответа при успешном обновлении
+    abstract method createResponseEntity(responseStatus, responseContent)
+    
+    // абстрактный метод для создания объекта ответа при ошибке обновления
+    abstract method createErrorResponse()
+
+// класс для обновления сущности "Товар" через REST API
+class ProductUpdater extends EntityUpdater is
+    method fetchEntity(entityId) is
+        // логика получения товара по ID
+        
+    method validateEntity(entity) is
+        // валидация товара
+        if entity.isValid() then
+            return true
+        else
+            return false
+    
+    method createUpdateRequest(existingEntity, newEntity) is
+        // создание запроса на обновление товара
+        
+    method sendUpdateRequest(updateRequest) is
+        // отправка запроса на обновление товара
+        
+    method createResponseEntity(responseStatus, responseContent) is
+        // создание ответа при успешном обновлении товара
+        
+    method createErrorResponse() is
+        // создание ответа при ошибке обновления товара
+
+// класс для обновления сущности "Пользователь" через REST API
+class UserUpdater extends EntityUpdater is
+    method fetchEntity(entityId) is
+        // логика получения пользователя по ID
+        
+    method validateEntity(entity) is
+        // валидация пользователя, запрещено изменять email
+        
+    method createUpdateRequest(existingEntity, newEntity) is
+        // создание запроса на обновление пользователя
+        
+    method sendUpdateRequest(updateRequest) is
+        // отправка запроса на обновление пользователя
+        
+    method createResponseEntity(responseStatus, responseContent) is
+        // создание ответа при успешном обновлении пользователя
+        
+    method createErrorResponse() is
+        // создание ответа при ошибке обновления пользователя
+
+// класс для обновления сущности "Заказ" через REST API
+class OrderUpdater extends EntityUpdater is
+    method fetchEntity(entityId) is
+        // логика получения заказа по ID
+        
+    method validateEntity(entity) is
+        // валидация заказа
+        
+    method createUpdateRequest(existingEntity, newEntity) is
+        // создание запроса на обновление заказа
+        
+    method sendUpdateRequest(updateRequest) is
+        // отправка запроса на обновление заказа
+        
+    method createResponseEntity(responseStatus, responseContent) is
+        // создание ответа при успешном обновлении заказа
+        
+    method createErrorResponse() is
+        // создание ответа при ошибке обновления заказа
+
+// пример интерфейса пользователя
+
+class ExampleApplication is
+    method main() is
+
+	// создание экземпляра класса ProductUpdater для обновления товара
+	productUpdater = new ProductUpdater()
+
+	// обновление товара
+	product = createProductEntity() // создание объекта товара для обновления
+	response = productUpdater.updateEntity(product)
+
+	// обработка ответа
+	if response.status == 200 then
+    		print("Товар успешно обновлен.")
+    		updatedProduct = response.entity
+    		// ваша логика для обработки успешного обновления товара
+	else
+    		print("ошибка при обновлении товара: " + response.content)
+    		// ваша логика для обработки ошибки обновления товара
+
+	// создание экземпляра класса UserUpdater для обновления пользователя
+	userUpdater = new UserUpdater()
+
+	// обновление пользователя
+	user = createUserEntity() // создание объекта пользователя для обновления
+	response = userUpdater.updateEntity(user)
+
+	// обработка ответа
+	if response.status == 200 then
+    		print("Пользователь успешно обновлен.")
+    		updatedUser = response.entity
+    		// логика для обработки успешного обновления пользователя
+	else
+    		print("ошибка при обновлении пользователя: " + response.content)
+    		// логика для обработки ошибки обновления пользователя
+
+
