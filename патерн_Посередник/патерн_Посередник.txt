@@ -1,0 +1,83 @@
+// общий интерфейс
+interface Mediator is
+    method notify(sender: Component, event: string)
+    
+// страница "оформления заказа" используя патерн посредник
+class OrderMediator implements Mediator is
+    private field deliveryDate: DatePicker
+    private field timeSlots: TimeSlotSelector
+    private field recipientCheckbox: Checkbox
+    private field recipientName: TextBox
+    private field recipientPhone: TextBox
+    private field selfPickupCheckbox: Checkbox
+    
+    // припишем конструктор для указаніх переменных
+    constructor OrderMediator(deliveryDate, timeSlots, recipientCheckbox, recipientName, recipientPhone, selfPickupCheckbox) is
+        this.deliveryDate = deliveryDate
+        // и тд
+    
+    // метод для обновления страницы при выборе дати/время доставки, другого получателя 
+    // млм при самовывозе
+    method notify(sender, event) is
+	// привыборе даты доставки обновляем доступные время
+        if (sender == deliveryDate && event == "dateChanged")
+            updateAvailableTimeSlots() 
+	// при выборе другого получателя обновляем стрнику 
+        else if (sender == recipientCheckbox && event == "checkChanged")
+            updateRecipientFieldsState()  
+	// при выборе самовывоза обновим страничку
+        else if (sender == selfPickupCheckbox && event == "checkChanged")
+            updateDeliveryInfoState()  
+
+    // метод для обновления доступного времени в выбраную дату
+    method updateAvailableTimeSlots() is
+        // ...
+
+    // метод обновления странички при изменения состояния чекбокса "другой получатель".
+    method updateRecipientFieldsState() is
+        // ...
+    
+    // метод обновления странички при изменения состояния чекбокса "самовывоз"
+    method updateDeliveryInfoState() is
+        // ...
+
+// классы компонентов взаимодействуют с посредниками через их общий интерфейс
+class Component is
+    field mediator: Mediator
+    
+    constructor Component(mediator) is
+        this.mediator = mediator
+
+    // методы для взаимодействия с посредником
+    method click() is
+        mediator.notify(this, "click")
+
+    method change() is
+        mediator.notify(this, "change")
+
+// классы конкретных компонентов.
+class DatePicker extends Component is
+    // реализация выбора даты
+    
+class TimeSlotSelector extends Component is
+    // реализация выбора времени
+    
+class Checkbox extends Component is
+    // реализация чекбокса
+    
+class TextBox extends Component is
+    // реализация текстового поля
+
+
+// пример интерфейса пользователя
+class ExampleApplication is
+    method main() is
+
+	// создание компонентов и посредника и настройка связей
+	deliveryDate = new DatePicker(orderMediator)
+	timeSlots = new TimeSlotSelector(orderMediator)
+	recipientCheckbox = new Checkbox(orderMediator)
+	recipientName = new TextBox(orderMediator)
+	recipientPhone = new TextBox(orderMediator)
+	selfPickupCheckbox = new Checkbox(orderMediator)
+	orderMediator = new OrderMediator(deliveryDate, timeSlots, recipientCheckbox, recipientName, recipientPhone, selfPickupCheckbox)
